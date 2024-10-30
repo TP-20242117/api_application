@@ -1,0 +1,80 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Educator {
+  id       Int    @id @default(autoincrement())
+  name     String
+  email    String @unique
+  password String
+  salons   Salon[]
+}
+
+model Student {
+  id             Int      @id @default(autoincrement())
+  name           String
+  password       String
+  age            Int
+  salon          Salon?   @relation(fields: [salonId], references: [id])
+  salonId        Int?
+  evaluations    Evaluation[]
+}
+
+model Salon {
+  id          Int        @id @default(autoincrement())
+  name        String
+  educator    Educator   @relation(fields: [educatorId], references: [id])
+  educatorId  Int
+  students    Student[]
+}
+
+model Evaluation {
+  id           Int              @id @default(autoincrement())
+  type         String
+  date         DateTime
+  duration     Int
+  student      Student          @relation(fields: [studentId], references: [id])
+  studentId    Int
+  stroopResults StroopResult[]
+  cptResults   CPTResult[]
+  sstResults   SSTResult[]
+}
+
+model StroopResult {
+  id                  Int       @id @default(autoincrement())
+  evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
+  evaluationId        Int
+  averageResponseTime Int
+  correctAnswers      Int
+  incorrectAnswers    Int
+}
+
+model CPTResult {
+  id                  Int       @id @default(autoincrement())
+  evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
+  evaluationId        Int
+  averageResponseTime Int
+  omissionErrors      Int
+  commissionErrors    Int
+}
+
+model SSTResult {
+  id                  Int       @id @default(autoincrement())
+  evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
+  evaluationId        Int
+  averageResponseTime Int
+  correctStops        Int
+  incorrectStops      Int
+  ignoredArrows       Int
+}
