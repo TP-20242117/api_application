@@ -18,16 +18,16 @@ export class ClassroomController {
 
   @Get('educator/:id')
   findByEducator(@Param('id') educatorId: number) {
-    return this.classroomService.findByEducator(educatorId);
+    return this.classroomService.findByEducator(+educatorId);
   }
 
   @Patch(':id')
   update(@Param('id') id: number, @Body() data: UpdateClassroomDto) {
-    return this.classroomService.update(id, data);
+    return this.classroomService.update(+id, data);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return this.classroomService.delete(id);
+    return this.classroomService.delete(+id);
   }
 }
