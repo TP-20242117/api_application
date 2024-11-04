@@ -26,18 +26,18 @@ export class StudentController {
 
   @Get(':id')
   findById(@Param('id') id: number) {
-    return this.studentService.findById(id);
+    return this.studentService.findById(+id);
   }
 
   @Patch(':id')
   @ApiBody({ type: UpdateStudentDto })
   update(@Param('id') id: number, @Body() updateStudentDto: UpdateStudentDto) {
-    return this.studentService.update(id, updateStudentDto);
+    return this.studentService.update(+id, updateStudentDto);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return this.studentService.delete(id);
+    return this.studentService.delete(+id);
   }
 
   @Post('upload-array')

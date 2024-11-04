@@ -13,7 +13,7 @@ export class ResultController {
 
   @Get('stroop/:evaluationId')
   findStroopResults(@Param('evaluationId') evaluationId: number) {
-    return this.resultService.findStroopResultsByEvaluation(evaluationId);
+    return this.resultService.findStroopResultsByEvaluation(+evaluationId);
   }
 
   @Post('cpt')
@@ -23,7 +23,7 @@ export class ResultController {
 
   @Get('cpt/:evaluationId')
   findCPTResults(@Param('evaluationId') evaluationId: number) {
-    return this.resultService.findCPTResultsByEvaluation(evaluationId);
+    return this.resultService.findCPTResultsByEvaluation(+evaluationId);
   }
 
   @Post('sst')
@@ -33,6 +33,6 @@ export class ResultController {
 
   @Get('sst/:evaluationId')
   findSSTResults(@Param('evaluationId') evaluationId: number) {
-    return this.resultService.findSSTResultsByEvaluation(evaluationId);
+    return this.resultService.findSSTResultsByEvaluation(+evaluationId);
   }
 }

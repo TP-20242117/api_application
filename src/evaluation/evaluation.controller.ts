@@ -18,16 +18,16 @@ export class EvaluationController {
 
   @Get('student/:studentId')
   findByStudent(@Param('studentId') studentId: number) {
-    return this.evaluationService.findByStudent(studentId);
+    return this.evaluationService.findByStudent(+studentId);
   }
 
   @Delete(':id')
   delete(@Param('id') id: number) {
-    return this.evaluationService.delete(id);
+    return this.evaluationService.delete(+id);
   }
 
   @Get('student/:studentId/results')
   findEvaluationsWithResults(@Param('studentId') studentId: number) {
-    return this.evaluationService.findEvaluationsWithResultsByStudent(studentId);
+    return this.evaluationService.findEvaluationsWithResultsByStudent(+studentId);
   }
 }
