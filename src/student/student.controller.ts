@@ -1,6 +1,6 @@
 import { Controller, Post, Get, Patch, Delete, Param, Body } from '@nestjs/common';
 import { StudentService } from './student.service';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody,  ApiOperation } from '@nestjs/swagger';
 import { CreateStudentDto, UpdateStudentDto, UploadStudentsArrayDto } from './dto/student.dto';
 
 @Controller('students')
@@ -16,6 +16,12 @@ export class StudentController {
   @Get()
   findAll() {
     return this.studentService.findAll();
+  }
+
+  @Get('with-evaluations')
+  @ApiOperation({ summary: 'Get all students with their evaluations and results' })
+  findAllStudentsWithEvaluations() {
+    return this.studentService.findAllStudentsWithEvaluations();
   }
 
   @Get(':id')

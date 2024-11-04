@@ -38,4 +38,18 @@ export class StudentService {
 
     return this.prisma.student.createMany({ data: validStudents });
   }
+
+  async findAllStudentsWithEvaluations() {
+    return this.prisma.student.findMany({
+      include: {
+        evaluations: {
+          include: {
+            stroopResults: true,
+            cptResults: true,
+            sstResults: true,
+          },
+        },
+      },
+    });
+  }
 }

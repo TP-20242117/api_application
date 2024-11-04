@@ -29,12 +29,26 @@ export class CreateStudentDto {
     salonId?: number;
   }
   
-  export class UploadStudentsArrayDto {
-    students: Array<{
-      name: string;
-      password: string;
-      age: number;
-      salonId: number;
-    }>;
+  export class StudentArrayItemDto {
+    @ApiProperty({ example: 'Juan Perez', description: 'Student Name' })
+    name: string;
+  
+    @ApiProperty({ example: '12345678', description: 'Student Password' })
+    password: string;
+  
+    @ApiProperty({ example: 15, description: 'Student Age' })
+    age: number;
+  
+    @ApiProperty({ example: 1, description: 'Student Classroom' })
+    salonId: number;
   }
+  
+  export class UploadStudentsArrayDto {
+    @ApiProperty({
+      type: [StudentArrayItemDto],
+      description: 'Array of students to upload',
+    })
+    students: StudentArrayItemDto[];
+  }
+  
   
