@@ -24,6 +24,11 @@ export class StudentController {
     return this.studentService.findAllStudentsWithEvaluations();
   }
 
+  @Get('salon/:salonId')
+  async findStudentsBySalonId(@Param('salonId') salonId: string) {
+    return this.studentService.findBySalonId(+salonId);
+  }
+
   @Get(':id')
   findById(@Param('id') id: number) {
     return this.studentService.findById(+id);

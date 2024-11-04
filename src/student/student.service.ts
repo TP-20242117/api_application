@@ -48,6 +48,27 @@ export class StudentService {
     return this.resp;
   }
 
+  async findBySalonId(salonId: number) {
+    try {
+      this.resp.data = {};
+      this.resp.error = false;
+      this.resp.statusCode = 200;
+      this.resp.message = 'Students retrieved successfully by salon ID';
+  
+      const students = await this.prisma.student.findMany({
+        where: { salonId },
+      });
+  
+      this.resp.data = students;
+    } catch (error) {
+      this.resp.error = true;
+      this.resp.message = JSON.stringify(error);
+      this.resp.statusCode = 400;
+    }
+    return this.resp;
+  }
+  
+
   async findById(id: number) {
     try {
       this.resp.data = {};
