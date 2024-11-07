@@ -1,2 +1,2 @@
 -- AlterTable
-ALTER TABLE `student` ADD COLUMN `hasTdah` BOOLEAN NULL;
+ALTER TABLE `Student` ADD COLUMN `hasTdah` BOOLEAN NULL;
