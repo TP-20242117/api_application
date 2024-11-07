@@ -23,6 +23,9 @@ export class CreateStudentDto {
     password?: string;
 
     @ApiProperty({ required: false })
+    hasTdah?: boolean;
+
+    @ApiProperty({ required: false })
     age?: number;
 
     @ApiProperty({ required: false })
