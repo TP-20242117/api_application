@@ -38,7 +38,12 @@ export class ResultService {
       this.resp.message = 'Stroop results retrieved successfully';
       this.resp.statusCode = 200;
 
-      const results = await this.prisma.stroopResult.findMany({ where: { evaluationId } });
+      const results = await this.prisma.stroopResult.findMany({
+        where: {
+          evaluationId,
+          deleted_at: null,
+        },
+      });
       this.resp.data = results;
     } catch (error) {
       this.resp.error = true;
@@ -72,7 +77,12 @@ export class ResultService {
       this.resp.message = 'CPT results retrieved successfully';
       this.resp.statusCode = 200;
 
-      const results = await this.prisma.cPTResult.findMany({ where: { evaluationId } });
+      const results = await this.prisma.cPTResult.findMany({
+        where: {
+          evaluationId,
+          deleted_at: null,
+        },
+      });
       this.resp.data = results;
     } catch (error) {
       this.resp.error = true;
@@ -106,7 +116,12 @@ export class ResultService {
       this.resp.message = 'SST results retrieved successfully';
       this.resp.statusCode = 200;
 
-      const results = await this.prisma.sSTResult.findMany({ where: { evaluationId } });
+      const results = await this.prisma.sSTResult.findMany({
+        where: {
+          evaluationId,
+          deleted_at: null,
+        },
+      });
       this.resp.data = results;
     } catch (error) {
       this.resp.error = true;

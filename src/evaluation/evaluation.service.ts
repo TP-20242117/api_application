@@ -38,7 +38,9 @@ export class EvaluationService {
       this.resp.message = 'Evaluations retrieved successfully';
       this.resp.statusCode = 200;
 
-      const evaluations = await this.prisma.evaluation.findMany();
+      const evaluations = await this.prisma.evaluation.findMany({
+        where: { deleted_at: null },
+      });
       this.resp.data = evaluations;
     } catch (error) {
       this.resp.error = true;
@@ -55,7 +57,12 @@ export class EvaluationService {
       this.resp.message = 'Evaluations by student retrieved successfully';
       this.resp.statusCode = 200;
 
-      const evaluations = await this.prisma.evaluation.findMany({ where: { studentId } });
+      const evaluations = await this.prisma.evaluation.findMany({
+        where: {
+          studentId,
+          deleted_at: null,
+        },
+      });
       this.resp.data = evaluations;
     } catch (error) {
       this.resp.error = true;
@@ -71,6 +78,14 @@ export class EvaluationService {
       this.resp.error = false;
       this.resp.message = 'Evaluation updated successfully';
       this.resp.statusCode = 200;
+
+      const existingEvaluation = await this.prisma.evaluation.findUnique({
+        where: { id },
+      });
+
+      if (!existingEvaluation || existingEvaluation.deleted_at !== null) {
+        throw new BadRequestException('Evaluation not found or is inactive');
+      }
 
       const updatedEvaluation = await this.prisma.evaluation.update({
         where: { id },
@@ -92,7 +107,12 @@ export class EvaluationService {
       this.resp.message = 'Evaluation deleted successfully';
       this.resp.statusCode = 200;
 
-      await this.prisma.evaluation.delete({ where: { id } });
+      await this.prisma.evaluation.update({
+        where: { id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
     } catch (error) {
       this.resp.error = true;
       this.resp.message = JSON.stringify(error);
@@ -109,11 +129,11 @@ export class EvaluationService {
       this.resp.statusCode = 200;
 
       const evaluations = await this.prisma.evaluation.findMany({
-        where: { studentId },
+        where: { studentId, deleted_at: null },
         include: {
-          stroopResults: true,
-          cptResults: true,
-          sstResults: true,
+          stroopResults: { where: { deleted_at: null } },
+          cptResults: { where: { deleted_at: null } },
+          sstResults: { where: { deleted_at: null } },
         },
       });
       this.resp.data = evaluations;

@@ -38,7 +38,9 @@ export class StudentService {
       this.resp.message = 'Students retrieved successfully';
       this.resp.statusCode = 200;
 
-      const students = await this.prisma.student.findMany();
+      const students = await this.prisma.student.findMany({
+        where: { deleted_at: null },
+      });
       this.resp.data = students;
     } catch (error) {
       this.resp.error = true;
@@ -56,7 +58,7 @@ export class StudentService {
       this.resp.message = 'Students retrieved successfully by salon ID';
   
       const students = await this.prisma.student.findMany({
-        where: { salonId },
+        where: { salonId, deleted_at: null },
       });
   
       this.resp.data = students;
@@ -76,8 +78,13 @@ export class StudentService {
       this.resp.statusCode = 200;
       this.resp.message = 'Student retrieved successfully';
 
-      const student = await this.prisma.student.findUnique({ where: { id } });
-      if (!student) throw new BadRequestException('Student not found');
+      const student = await this.prisma.student.findUnique({
+        where: { id },
+      });
+      
+      if (!student || student.deleted_at !== null) {
+        throw new BadRequestException('Student not found or is inactive');
+      }
 
       this.resp.data = student;
     } catch (error) {
@@ -94,6 +101,14 @@ export class StudentService {
       this.resp.error = false;
       this.resp.message = 'Student updated successfully';
       this.resp.statusCode = 200;
+
+      const existingStudent = await this.prisma.student.findUnique({
+        where: { id },
+      });
+
+      if (!existingStudent || existingStudent.deleted_at !== null) {
+        throw new BadRequestException('Student not found or is inactive');
+      }
 
       const updatedStudent = await this.prisma.student.update({
         where: { id },
@@ -115,7 +130,19 @@ export class StudentService {
       this.resp.message = 'Student deleted successfully';
       this.resp.statusCode = 200;
 
-      await this.prisma.student.delete({ where: { id } });
+      await this.prisma.student.update({
+        where: { id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
+
+      await this.prisma.evaluation.updateMany({
+        where: { studentId: id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
     } catch (error) {
       this.resp.error = true;
       this.resp.message = JSON.stringify(error);
@@ -159,13 +186,15 @@ export class StudentService {
       const studentsWithEvaluations = await this.prisma.student.findMany({
         include: {
           evaluations: {
+            where: { deleted_at: null }, 
             include: {
-              stroopResults: true,
-              cptResults: true,
-              sstResults: true,
+              stroopResults: { where: { deleted_at: null } },
+              cptResults: { where: { deleted_at: null } },
+              sstResults: { where: { deleted_at: null } },
             },
           },
         },
+        where: { deleted_at: null },
       });
       this.resp.data = studentsWithEvaluations;
     } catch (error) {

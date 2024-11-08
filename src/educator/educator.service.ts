@@ -21,7 +21,9 @@ export class EducatorService {
       this.resp.message = 'Educators retrieved successfully';
       this.resp.statusCode = 200;
 
-      const educators = await this.prisma.educator.findMany();
+      const educators = await this.prisma.educator.findMany({
+        where: { deleted_at: null },
+      });
       this.resp.data = educators;
     } catch (error) {
       this.resp.error = true;
@@ -38,7 +40,9 @@ export class EducatorService {
       this.resp.statusCode = 200;
       this.resp.message = 'Educator retrieved successfully';
 
-      const educator = await this.prisma.educator.findUnique({ where: { id } });
+      const educator = await this.prisma.educator.findUnique({
+        where: { id, deleted_at: null },
+      });
       if (!educator) throw new BadRequestException('Educator not found');
 
       this.resp.data = educator;
@@ -58,7 +62,7 @@ export class EducatorService {
       this.resp.statusCode = 200;
 
       const updatedEducator = await this.prisma.educator.update({
-        where: { id },
+        where: { id, deleted_at: null }, 
         data,
       });
       this.resp.data = updatedEducator;
@@ -77,7 +81,20 @@ export class EducatorService {
       this.resp.message = 'Educator deleted successfully';
       this.resp.statusCode = 200;
 
-      await this.prisma.educator.delete({ where: { id } });
+      await this.prisma.educator.update({
+        where: { id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
+
+      await this.prisma.salon.updateMany({
+        where: { educatorId: id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
+
     } catch (error) {
       this.resp.error = true;
       this.resp.message = JSON.stringify(error);

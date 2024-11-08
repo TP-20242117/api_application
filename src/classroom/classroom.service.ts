@@ -38,7 +38,9 @@ export class ClassroomService {
       this.resp.message = 'Classrooms retrieved successfully';
       this.resp.statusCode = 200;
 
-      const classrooms = await this.prisma.salon.findMany();
+      const classrooms = await this.prisma.salon.findMany({
+        where: { deleted_at: null },
+      });
       this.resp.data = classrooms;
     } catch (error) {
       this.resp.error = true;
@@ -56,7 +58,10 @@ export class ClassroomService {
       this.resp.statusCode = 200;
 
       const classrooms = await this.prisma.salon.findMany({
-        where: { educatorId },
+        where: {
+          educatorId,
+          deleted_at: null,
+        },
       });
       this.resp.data = classrooms;
     } catch (error) {
@@ -75,7 +80,7 @@ export class ClassroomService {
       this.resp.statusCode = 200;
 
       const updatedClassroom = await this.prisma.salon.update({
-        where: { id },
+        where: { id, deleted_at: null }, 
         data,
       });
       this.resp.data = updatedClassroom;
@@ -94,7 +99,12 @@ export class ClassroomService {
       this.resp.message = 'Classroom deleted successfully';
       this.resp.statusCode = 200;
 
-      await this.prisma.salon.delete({ where: { id } });
+      await this.prisma.salon.update({
+        where: { id },
+        data: {
+          deleted_at: new Date(),
+        },
+      });
     } catch (error) {
       this.resp.error = true;
       this.resp.message = JSON.stringify(error);
