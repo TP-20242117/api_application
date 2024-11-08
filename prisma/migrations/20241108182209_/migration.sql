@@ -1,20 +1,20 @@
 -- AlterTable
-ALTER TABLE `cptresult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `CPTResult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `educator` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `Educator` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `evaluation` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `Evaluation` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `salon` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `Salon` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `sstresult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `SSTResult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `stroopresult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `StroopResult` ADD COLUMN `deleted_at` DATETIME(3) NULL;
 
 -- AlterTable
-ALTER TABLE `student` ADD COLUMN `deleted_at` DATETIME(3) NULL;
+ALTER TABLE `Student` ADD COLUMN `deleted_at` DATETIME(3) NULL;
