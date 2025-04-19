@@ -14,75 +14,91 @@ datasource db {
 }
 
 model Educator {
-  id       Int    @id @default(autoincrement())
-  name     String
-  email    String @unique
-  password String
-  salons   Salon[]
-  deleted_at   DateTime?
+  id         Int        @id @default(autoincrement())
+  name       String
+  email      String     @unique
+  password   String
+  salons     Salon[]
+  deleted_at DateTime?
+  Feedback   Feedback[]
 }
 
 model Student {
-  id             Int      @id @default(autoincrement())
-  name           String
-  password       String
-  age            Int
-  hasTdah        Boolean?
-  salon          Salon?   @relation(fields: [salonId], references: [id])
-  salonId        Int?
-  evaluations    Evaluation[]
-  deleted_at     DateTime?
+  id          Int          @id @default(autoincrement())
+  name        String
+  password    String
+  age         Int
+  hasTdah     Boolean?
+  salon       Salon?       @relation(fields: [salonId], references: [id])
+  salonId     Int?
+  evaluations Evaluation[]
+  deleted_at  DateTime?
+  Feedback    Feedback[]
 }
 
 model Salon {
-  id          Int        @id @default(autoincrement())
-  name        String
-  educator    Educator   @relation(fields: [educatorId], references: [id])
-  educatorId  Int
-  students    Student[]
-  deleted_at  DateTime?
+  id         Int       @id @default(autoincrement())
+  name       String
+  educator   Educator  @relation(fields: [educatorId], references: [id])
+  educatorId Int
+  students   Student[]
+  deleted_at DateTime?
 }
 
 model Evaluation {
-  id           Int              @id @default(autoincrement())
-  type         String
-  date         DateTime
-  duration     Int
-  student      Student          @relation(fields: [studentId], references: [id])
-  studentId    Int
+  id            Int            @id @default(autoincrement())
+  type          String
+  date          DateTime
+  duration      Int
+  student       Student        @relation(fields: [studentId], references: [id])
+  studentId     Int
   stroopResults StroopResult[]
-  cptResults   CPTResult[]
-  sstResults   SSTResult[]
-  deleted_at   DateTime?
+  cptResults    CPTResult[]
+  sstResults    SSTResult[]
+  deleted_at    DateTime?
 }
 
 model StroopResult {
-  id                  Int       @id @default(autoincrement())
+  id                  Int        @id @default(autoincrement())
   evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
   evaluationId        Int
   averageResponseTime Int
   correctAnswers      Int
   incorrectAnswers    Int
-  deleted_at   DateTime?
+  deleted_at          DateTime?
 }
 
 model CPTResult {
-  id                  Int       @id @default(autoincrement())
+  id                  Int        @id @default(autoincrement())
   evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
   evaluationId        Int
   averageResponseTime Int
   omissionErrors      Int
   commissionErrors    Int
-  deleted_at   DateTime?
+  deleted_at          DateTime?
 }
 
 model SSTResult {
-  id                  Int       @id @default(autoincrement())
+  id                  Int        @id @default(autoincrement())
   evaluation          Evaluation @relation(fields: [evaluationId], references: [id])
   evaluationId        Int
   averageResponseTime Int
   correctStops        Int
   incorrectStops      Int
   ignoredArrows       Int
-  deleted_at   DateTime?
+  deleted_at          DateTime?
+}
+
+model Feedback {
+  id        Int      @id @default(autoincrement())
+  rating    Int // cantidad de estrellas (obligatorio)
+  comment   String? // comentario (opcional)
+  createdAt DateTime @default(now())
+  deleted_at          DateTime?
+
+  student   Student? @relation(fields: [studentId], references: [id])
+  studentId Int?
+
+  educator   Educator? @relation(fields: [educatorId], references: [id])
+  educatorId Int?
 }
