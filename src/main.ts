@@ -12,6 +12,8 @@ async function bootstrap() {
     credentials: true, 
   });
 
+  app.setGlobalPrefix('api');
+
   const config = new DocumentBuilder()
     .setTitle('API Documentation')
     .setDescription('API endpoints for the project')
