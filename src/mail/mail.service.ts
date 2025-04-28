@@ -16,11 +16,13 @@ export class MailService {
   };
 
   private transporter = nodemailer.createTransport({
-    service: 'gmail',
+    host: 'smtp-relay.brevo.com',
+    port: 587,
     auth: {
       user: emailUser,
       pass: emailPassword,
     },
+    secure: false
   });
 
   constructor(private prisma: PrismaService) {}
