@@ -3,7 +3,7 @@ import axios from 'axios';
 import { PrismaService } from '../prisma/prisma.service';
 import { ResponseScheme } from 'src/common/interface/response.interface';
 
-const brevoApiKey = "smtp-relay.brevo.com";
+const brevoApiKey = process.env.BREVO_API_KEY;
 const senderEmail = "jona.7.curi@gmail.com"; 
 
 @Injectable()
