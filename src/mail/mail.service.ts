@@ -45,42 +45,66 @@ export class MailService {
         },
       });
 
-      const report = students
-        .map((student) => {
-          const evaluations = student.evaluations
-            .map((evaluation) => {
-              const stroop = evaluation.stroopResults
-                .map(result => `Stroop - Avg Resp Time: ${result.averageResponseTime}, Correct: ${result.correctAnswers}, Incorrect: ${result.incorrectAnswers}`)
-                .join('; ');
-              const cpt = evaluation.cptResults
-                .map(result => `CPT - Avg Resp Time: ${result.averageResponseTime}, Omissions: ${result.omissionErrors}, Commissions: ${result.commissionErrors}`)
-                .join('; ');
-              const sst = evaluation.sstResults
-                .map(result => `SST - Avg Resp Time: ${result.averageResponseTime}, Correct Stops: ${result.correctStops}, Incorrect Stops: ${result.incorrectStops}, Ignored Arrows: ${result.ignoredArrows}`)
-                .join('; ');
+      let reportHtml = `
+      <h2>Reporte de Evaluaciones del Salón</h2>
+      <p>Estimado docente,</p>
+      <p>A continuación, encontrará el resumen de las evaluaciones realizadas a los estudiantes de su salón:</p>
+    `;
 
-              return `Evaluation ID: ${evaluation.id}, Type: ${evaluation.type}, Date: ${evaluation.date}\n Results: ${stroop}\n${cpt}\n${sst}`;
-            })
-            .join('\n');
+    students.forEach((student) => {
+      reportHtml += `
+        <h3>Estudiante: ${student.name} | Edad: ${student.age}</h3>
+        <ul>
+      `;
 
-          return `Student: ${student.name}, Age: ${student.age}\nEvaluations:\n${evaluations}\n\n`;
-        })
-        .join('\n');
+      student.evaluations.forEach((evaluation) => {
+        const stroop = evaluation.stroopResults.map(result => `
+          <li><strong>Stroop:</strong> Tiempo de respuesta promedio: ${result.averageResponseTime} ms, Aciertos: ${result.correctAnswers}, Errores: ${result.incorrectAnswers}</li>
+        `).join('');
 
-      const mailOptions = {
-        from: emailUser,
-        to: email,
-        subject: 'Reporte del Salón',
-        text: report,
-      };
+        const cpt = evaluation.cptResults.map(result => `
+          <li><strong>CPT:</strong> Tiempo de reacción promedio: ${result.averageResponseTime} ms, Errores de omisión: ${result.omissionErrors}, Errores de comisión: ${result.commissionErrors}</li>
+        `).join('');
 
-      const result = await this.transporter.sendMail(mailOptions);
-      this.resp.data = result;
-    } catch (error) {
-      this.resp.error = true;
-      this.resp.message = JSON.stringify(error);
-      this.resp.statusCode = 400;
-    }
-    return this.resp;
+        const sst = evaluation.sstResults.map(result => `
+          <li><strong>SST:</strong> Tiempo de reacción promedio: ${result.averageResponseTime} ms, Paradas correctas: ${result.correctStops}, Paradas incorrectas: ${result.incorrectStops}, Flechas ignoradas: ${result.ignoredArrows}</li>
+        `).join('');
+
+        reportHtml += `
+          <li><strong>Evaluación:</strong> Tipo: ${evaluation.type} | Fecha: ${new Date(evaluation.date).toLocaleDateString('es-PE')}</li>
+          <ul>
+            ${stroop}
+            ${cpt}
+            ${sst}
+          </ul>
+        `;
+      });
+
+      reportHtml += `
+        </ul>
+        <hr />
+      `;
+    });
+
+    reportHtml += `
+      <p>Este reporte es generado automáticamente por la plataforma de evaluaciones cognitivas.</p>
+      <p><strong>Atentamente,<br/>Equipo de Evaluaciones</strong></p>
+    `;
+
+    const mailOptions = {
+      from: `"Evaluaciones Cognitivas" <${emailUser}>`,
+      to: email,
+      subject: 'Reporte del Salón - Resultados de Evaluaciones',
+      html: reportHtml,
+    };
+
+    const result = await this.transporter.sendMail(mailOptions);
+    this.resp.data = result;
+  } catch (error) {
+    this.resp.error = true;
+    this.resp.message = JSON.stringify(error);
+    this.resp.statusCode = 400;
   }
+  return this.resp;
+}
 }

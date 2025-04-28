@@ -75,9 +75,9 @@ export class AuthService {
       this.resp.data = {};
       this.resp.error = false;
       this.resp.statusCode = 200;
-
+      const nameStudent = data.name.toUpperCase();
       const student = await this.prisma.student.findFirst({
-        where: { name: data.name, password: data.password },
+        where: { name: nameStudent, password: data.password },
       });
 
       if (!student) throw new BadRequestException('Invalid credentials');
