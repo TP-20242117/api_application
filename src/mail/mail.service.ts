@@ -16,7 +16,7 @@ export class MailService {
   };
 
   private transporter = nodemailer.createTransport({
-    host: 'smtp-relay.brevo.com',
+    host: 'smtp-relay.sendinblue.com',
     port: 587,
     auth: {
       user: emailUser,
@@ -94,7 +94,7 @@ export class MailService {
     `;
 
     const mailOptions = {
-      from: `"Evaluaciones Cognitivas" <${emailUser}>`,
+      from: `"Mindsort" <jona.7.curi@gmail.com>`,
       to: email,
       subject: 'Reporte del Salón - Resultados de Evaluaciones',
       html: reportHtml,
@@ -104,7 +104,7 @@ export class MailService {
     this.resp.data = result;
   } catch (error) {
     this.resp.error = true;
-    this.resp.message = JSON.stringify(error);
+    this.resp.message = error.message;
     this.resp.statusCode = 400;
   }
   return this.resp;
