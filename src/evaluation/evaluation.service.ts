@@ -113,6 +113,16 @@ export class EvaluationService {
           deleted_at: new Date(),
         },
       });
+
+      const deletedEval = await this.prisma.evaluation.findUnique({
+        where: { id },
+      });
+
+      await this.prisma.student.update({
+        where: { id: deletedEval.studentId },
+        data: { hasTdah: null },
+      });
+      
     } catch (error) {
       this.resp.error = true;
       this.resp.message = JSON.stringify(error);
